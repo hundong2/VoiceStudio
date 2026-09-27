@@ -11,7 +11,8 @@
     <a href="#get-started">Get started</a> ·
     <a href="#documentation">Docs</a> ·
     <a href="https://discord.gg/bzQavDfVV9">Discord</a> ·
-    <a href="README_CN.md">简体中文</a>
+    <a href="README_CN.md">简体中文</a> ·
+    <a href="README_KO.md">한국어</a>
   </p>
   <p>
     <a href="https://github.com/debpalash/VoiceStudio/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/debpalash/VoiceStudio/ci.yml?branch=main" alt="CI" /></a>
@@ -124,6 +125,7 @@ Add `-- --install` for the networked managed-runtime installation check.
 | Models & audio quality | [Engine guides](docs/engines/README.md) · [Benchmarks](docs/benchmarks.md) |
 | Integrations | [Local API](docs/speech-platform.md) · [MCP](docs/mcp.md) · [Examples](examples/README.md) |
 | Development | [Contributing](.github/CONTRIBUTING.md) · [Electron](electron/README.md) · [Changelog](CHANGELOG.md) |
+| Korean learning resources | [Step-by-step guide](guide/README.md) · [Code architecture](docs/archify/README.md) |
 
 Agent skills: `npx skills add debpalash/VoiceStudio` — choose **voicestudio** for audio workflows or **voicestudio-maintainer** for repository maintenance.
 

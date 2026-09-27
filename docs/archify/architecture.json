@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "VoiceStudio 음성 생성 경로",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/hundong2/VoiceStudio",
+      "revision": "31975717b2d473eb0ddb672f43f3cfc07c800996"
+    },
+    "views": [
+      {"id": "speech-path", "label": "생성 요청", "focus": ["renderer", "proxy", "generation", "finalize"], "note": "로컬 데스크톱의 일반 생성 경로이며 반환선은 생략했습니다."},
+      {"id": "artifact-path", "label": "결과 보존", "focus": ["finalize", "history", "wavefile"], "note": "워터마크 처리를 경유한 뒤 WAV와 SQLite 이력을 순서대로 저장합니다."}
+    ]
+  },
+  "layout": {"mode": "grid", "origin": [50, 90], "cols": 4, "cellW": 190, "cellH": 72, "gapX": 150, "gapY": 105},
+  "components": [
+    {"id": "renderer", "type": "frontend", "label": "생성 UI", "sublabel": "React · FormData", "row": 1, "col": 0, "sources": [{"path": "electron/src/shared/api/generate.ts", "line": 28}, {"path": "electron/src/shared/api/client.ts", "line": 361}]},
+    {"id": "proxy", "type": "backend", "label": "앱 프록시", "sublabel": "app://voicestudio", "row": 1, "col": 1, "sources": [{"path": "electron/src/main/protocol.ts", "line": 100}, {"path": "electron/src/main/index.ts", "line": 249}]},
+    {"id": "generation", "type": "backend", "label": "생성 라우터", "sublabel": "POST /generate", "row": 1, "col": 2, "sources": [{"path": "backend/main.py", "line": 763}, {"path": "backend/api/routers/generation.py", "line": 1558}, {"path": "backend/api/routers/generation.py", "line": 2534}]},
+    {"id": "finalize", "type": "security", "label": "결과 마무리", "sublabel": "워터마크 경유", "row": 1, "col": 3, "sources": [{"path": "backend/api/routers/generation.py", "line": 1301}, {"path": "backend/api/routers/generation.py", "line": 2581}]},
+    {"id": "supervisor", "type": "backend", "label": "백엔드 관리", "sublabel": "BackendSupervisor", "row": 0, "col": 1, "sources": [{"path": "electron/src/main/index.ts", "line": 242}, {"path": "electron/src/main/backend.ts"}]},
+    {"id": "engine", "type": "backend", "label": "음성 엔진", "sublabel": "TTSBackend.generate", "row": 0, "col": 2, "sources": [{"path": "backend/services/tts_backend.py", "line": 488}, {"path": "backend/api/routers/generation.py", "line": 2220}]},
+    {"id": "history", "type": "database", "label": "생성 이력", "sublabel": "SQLite · WAL", "row": 0, "col": 3, "sources": [{"path": "backend/core/db.py", "line": 15}, {"path": "backend/api/routers/generation.py", "line": 1351}]},
+    {"id": "wavefile", "type": "database", "label": "음성 파일", "sublabel": "OUTPUTS_DIR · WAV", "row": 2, "col": 3, "sources": [{"path": "backend/api/routers/generation.py", "line": 1343}, {"path": "backend/core/config.py"}]}
+  ],
+  "boundaries": [
+    {"kind": "region", "label": "Electron main 프로세스", "wraps": ["supervisor", "proxy"], "pad": 22}
+  ],
+  "connections": [
+    {"id": "submit", "from": "renderer", "to": "proxy", "label": "앱 내 fetch", "variant": "emphasis"},
+    {"id": "forward", "from": "proxy", "to": "generation", "label": "로컬 HTTP", "variant": "emphasis"},
+    {"id": "complete", "from": "generation", "to": "finalize", "label": "생성 텐서", "variant": "emphasis"},
+    {"id": "configure", "from": "supervisor", "to": "proxy", "label": "주소·인증", "fromSide": "bottom", "toSide": "top", "labelAt": [450, 164]},
+    {"id": "infer", "from": "generation", "to": "engine", "label": "추론 호출", "fromSide": "top", "toSide": "bottom"},
+    {"id": "history-write", "from": "finalize", "to": "history", "label": "이력 SQL", "fromSide": "top", "toSide": "bottom"},
+    {"id": "wav-write", "from": "finalize", "to": "wavefile", "label": "파일 저장", "fromSide": "bottom", "toSide": "top", "labelAt": [1130, 341]}
+  ],
+  "cards": [
+    {"dot": "cyan", "title": "권한 경계", "items": ["렌더러의 인증 헤더는 main에서 치환", "백엔드 선택은 supervisor가 관리"]},
+    {"dot": "emerald", "title": "생성 경로", "items": ["엔진 호출의 반환 텐서를 마무리 함수에 전달", "엔진별 내부 실행 방식은 생략"]},
+    {"dot": "rose", "title": "보존의 한계", "items": ["WAV 저장과 DB 기록은 단일 트랜잭션 아님", "워터마크 삽입은 설정·가용성에 의존"]}
+  ]
+}

@@ -1,0 +1,3 @@
+# Keep artifact-bound receipts reproducible on Windows checkouts.
+*.json text eol=lf
+*.html text eol=lf

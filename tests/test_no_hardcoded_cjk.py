@@ -49,6 +49,15 @@ _ALLOWED_FILES = {
     # Documentation & translated docs
     "README.md",                                  # native language-switcher link
     "README_CN.md",                               # Chinese README (a translation)
+    "README_KO.md",                               # Korean README (a translation)
+    "guide/README.md",                            # Korean learning guide, not shipped UI
+    "guide/01_getting_started.md",                 # Korean installation learning notes
+    "guide/02_core_concepts.md",                   # Korean API and audio learning notes
+    "guide/03_advanced.md",                        # Korean advanced learning notes
+    "guide/validation.md",                        # Korean learning verification record
+    "docs/archify/README.md",                      # Korean code-architecture documentation
+    "docs/archify/architecture.json",              # Korean diagram source, not application config
+    "docs/archify/architecture.html",              # Generated Korean standalone documentation
     "docs/data_preparation.md",                   # multilingual example payloads
     "docs/voice-design.md",                       # EN/CJK attribute mapping table
     "docs/engines/omnivoice.md",                  # pinyin pronunciation-control example (functional CJK)
